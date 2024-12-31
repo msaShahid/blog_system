@@ -33,6 +33,15 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
+            <a href="{{ route('login.google') }}" class="btn btn-block btn-social btn-google">
+                <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" alt="Login with Google" />
+            </a>
+            <a href="{{ route('login.facebook') }}" class="btn btn-block btn-social btn-facebook">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Login with Facebook" style="height: 40px; width: auto;" />
+            </a>
+        </div>
+
+        <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
