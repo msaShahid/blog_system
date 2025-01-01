@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\PostController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Admin\AdminController;
 
@@ -20,6 +21,7 @@ Route::middleware(['auth'])->group(function () {
     // User routes
     Route::middleware('CheckRole:user')->prefix('user')->group(function () {
         Route::get('/dashboard', [UserController::class, 'index'])->name('user.dashboard'); 
+        Route::resource('post', PostController::class);
     });
 });
 
