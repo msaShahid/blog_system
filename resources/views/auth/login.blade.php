@@ -32,14 +32,6 @@
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a href="{{ route('login.google') }}" class="btn btn-block btn-social btn-google">
-                <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" alt="Login with Google" />
-            </a>
-            <a href="{{ route('login.facebook') }}" class="btn btn-block btn-social btn-facebook">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Login with Facebook" style="height: 40px; width: auto;" />
-            </a>
-        </div>
 
         <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
@@ -52,5 +44,17 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+
+        <br> <hr>
+        <div class="flex items-center justify-end mt-4 space-x-6">
+            <p>Login with</p>
+            <a href="{{ route('auth.socialite.redirect', 'google') }}" class="text-red-600 text-3xl hover:text-red-800">
+                <i class="fa-brands fa-google"></i>
+            </a>
+            <a href="{{ route('auth.socialite.redirect', 'facebook') }}" class="text-blue-600 text-3xl hover:text-blue-800">
+                <i class="fa-brands fa-facebook"></i>
+            </a>
+        </div>
+
     </form>
 </x-guest-layout>

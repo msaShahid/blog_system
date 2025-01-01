@@ -13,85 +13,42 @@ use Laravel\Socialite\Facades\Socialite;
 
 class SocialLoginController extends Controller
 {
-    public function redirectToGoogle()
+    public function redirect($provider)
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver($provider)->redirect();
     }
-
-    public function handleGoogleCallback()
+    
+    public function callback($provider)
     {
         try {
-        
-            $user = Socialite::driver('google')->user();
-            $finduser = User::where('google_id', $user->id)->first();
-         
-            if($finduser){
-
-                Auth::login($finduser);
-                return redirect()->intended('dashboard');
-         
-            }else{
-                $newUser = User::updateOrCreate(
-                    ['email' => $user->email],
-                    [
-                        'name' => $user->name,
-                        'google_id'=> $user->id,
-                        'password' => Hash::make('password123'),
-                        'email_verified_at' => now()
-                    ]
-                );
-         
+            $user = Socialite::driver($provider)->user();
+            
+            $existingUser = User::where('email', $user->email)->first();
+    
+            if ($existingUser) {
+                Auth::login($existingUser);
+                return redirect()->intended(route('user.dashboard'));
+            } else {
+                $newUser = User::create([
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'password' => Hash::make('password123'), 
+                    'provider_name' => $provider,
+                    'provider_id' => $user->id,
+                    'provider_token' => $user->token,
+                    'email_verified_at' => now(),
+                ]);
+    
                 Auth::login($newUser);
-        
-                return redirect()->intended('dashboard');
+    
+                return redirect()->intended(route('user.dashboard'));
             }
-        
+    
         } catch (Exception $e) {
-            Log::error('Google login error: ' . $e->getMessage());
-            return redirect()->route('login')->with('error', 'Unable to login with Google. Please try again.');  
+            Log::error('Socialite login error: ' . $e->getMessage());
+
+            return redirect()->route('login')->with('error', 'Unable to login with Socialite. Please try again.');       
         }
-    }
-
-    public function redirectToFacebook()
-    {
-        return Socialite::driver('facebook')->redirect();
-    }
-
-    public function handleFacebookCallback()
-    {
-
-        try {
-
-            $user = Socialite::driver('facebook')->user();
-            $finduser = User::where('facebook_id', $user->id)->first();
-
-            if($finduser){
-
-                Auth::login($finduser);
-                return redirect()->intended('dashboard');
-
-            }else{
-
-                $newUser = User::updateOrCreate(
-                    ['email' => $user->email],
-                    [
-                        'name' => $user->name,
-                        'facebook_id'=> $user->id,
-                        'password' => Hash::make('password123'),
-                        'email_verified_at' => now()
-                    ]
-                );
-
-                Auth::login($newUser);
-
-                return redirect()->intended('dashboard');
-            }
-
-        } catch (Exception $e) {
-            Log::error('Facebook login error: ' . $e->getMessage());
-            return redirect()->route('login')->with('error', 'Unable to login with Facebook. Please try again.');  
-        }
-
     }
 
 }

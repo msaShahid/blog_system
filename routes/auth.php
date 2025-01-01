@@ -14,11 +14,8 @@ use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 
 Route::middleware('guest')->group(function () {
 
-    Route::get('login/google', [SocialLoginController::class, 'redirectToGoogle'])->name('login.google');
-    Route::get('google/callback', [SocialLoginController::class, 'handleGoogleCallback'])->name('google.callback');
-
-    Route::get('login/facebook', [SocialLoginController::class, 'redirectToFacebook'])->name('login.facebook');
-    Route::get('facebook/callback', [SocialLoginController::class, 'handleFacebookCallback'])->name('facebook.callback');
+    Route::get('login/{provider}/redirect', [SocialLoginController::class , 'redirect'])->name('auth.socialite.redirect');
+    Route::get('{provider}/callback', [SocialLoginController::class , 'callback'])->name('auth.socialite.callback');
 
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
