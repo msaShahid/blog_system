@@ -1,15 +1,29 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Admin\AdminController;
+
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+    
+    // Admin routes
+    Route::middleware('CheckRole:admin')->prefix('admin')->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    });
+
+    // User routes
+    Route::middleware('CheckRole:user')->prefix('user')->group(function () {
+        Route::get('/dashboard', [UserController::class, 'index'])->name('user.dashboard'); 
+    });
+});
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
