@@ -14,7 +14,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('user.post');
+        $posts = Post::with('author')->get();
+
+        return view('user.post', compact('posts'));
     }
 
     /**
@@ -60,7 +62,8 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+        return view('user.edit', compact('post'));
     }
 
     /**
@@ -68,7 +71,15 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        $post = Post::findOrFail($id);
+        $post->update($validated);
+
+        return redirect()->route('post.index')->with('success', 'Post updated successfully');
     }
 
     /**
@@ -76,6 +87,9 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+        $post->delete();
+
+        return redirect()->route('post.index')->with('success', 'Post deleted successfully');
     }
 }

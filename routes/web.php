@@ -21,7 +21,7 @@ Route::middleware(['auth'])->group(function () {
     // User routes
     Route::middleware('CheckRole:user')->prefix('user')->group(function () {
         Route::get('/dashboard', [UserController::class, 'index'])->name('user.dashboard'); 
-        Route::resource('post', PostController::class);
+        Route::resource('/post', PostController::class);
     });
 });
 
